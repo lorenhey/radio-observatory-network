@@ -1,70 +1,53 @@
-# radio-observatory-network
+# radio-observatory-network (v2.0.0)
 
-`radio-observatory-network` conecta observatorios radioastronómicos independientes en una red federada capaz de coordinar campañas, distribuir observaciones, validar y compartir productos y comparar detecciones entre sitios sin exigir hardware homogéneo ni control centralizado.
+[![GitHub Pages Deployment](https://img.shields.io/badge/GitHub%20Pages-Live%20v2.0.0-emerald)](https://lorenhey.github.io/radio-observatory-network/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Architecture: Federated Store--and--Forward](https://img.shields.io/badge/Architecture-Federated%20Store--and--Forward-amber.svg)](https://lorenhey.github.io/radio-observatory-network/)
 
-```mermaid
-graph TD
-    C[Campaign] -->|Defines| CO[Coordinator]
-    CO -->|Proposes Schedule| N1[Node A\n(Argentina)]
-    CO -->|Proposes Schedule| N2[Node B\n(Australia)]
-    CO -->|Proposes Schedule| N3[Node C\n(Europe)]
-    
-    N1 -->|Decides & Executes| R1[Radio Telescope]
-    N2 -->|Decides & Executes| R2[Radio Telescope]
-    N3 -->|Decides & Executes| R3[Radio Telescope]
-    
-    R1 -->|Local QC| V1[Validation]
-    R2 -->|Local QC| V2[Validation]
-    R3 -->|Local QC| V3[Validation]
-    
-    V1 -->|Store & Forward| FA[(Federated Archive)]
-    V2 -->|Store & Forward| FA
-    V3 -->|Store & Forward| FA
-```
+> **Núcleo Federado de Coordinación, Campañas Radioastronómicas & Archivo Descentralizado.**  
+> Conecta observatorios radioastronómicos independientes en una red cooperativa capaz de coordinar campañas de 24 horas continuas, distribuir tareas de observación según visibilidad de horizonte, validar espectros locales y cotejar detecciones sin servidor centralizado ni hardware homogéneo.
 
-## Quick Start (Demo)
+🔗 **Workbench Web Interactiva:** [https://lorenhey.github.io/radio-observatory-network/](https://lorenhey.github.io/radio-observatory-network/)
 
-You can run the built-in synthetic network demonstration:
+---
 
-```bash
-uv run python -m radio_observatory_network.cli demo
-```
+## 📡 Capacidades Principales (v2.0.0)
 
-Expected output:
-```text
-Campaign:
-24 h Solar Monitoring
+1. **Mapa Global de Estaciones & Líneas de Base:**
+   * Visualización interactiva en tiempo real de nodos en coordenadas geodésicas (Argentina, Sudáfrica, España, Australia, Chile, USA).
+   * Cálculo exacto de líneas de base interferométricas transcontinentales ($B \approx 6800\text{–}12000\text{ km}$).
+   * Línea de terminador solar (día/noche) calculada dinámicamente según tiempo UTC.
 
-Stations discovered:
-3
+2. **Astrometría Posicional & Emparejador de Capacidades (Capability Matcher):**
+   * Determinación de Tiempo Sidéreo Local (LST) y coordenadas horizontales (Altura y Azimut):
+     $$\sin(\text{Alt}) = \sin(\phi)\sin(\delta) + \cos(\phi)\cos(\delta)\cos(H)$$
+   * Filtrado automático de nodos elegibles según:
+     * Frecuencia de recepción ($100\text{ MHz}$ a $5\text{ GHz}$)
+     * Máscara de elevación de horizonte local ($> 15^\circ$)
+     * Estado operativo y sensores meteorológicos locales (viento, lluvia, tormenta eléctrica)
+     * Precisión de reloj de referencia para VLBI ($< 1\,\mu\text{s}$)
 
-Eligible:
-2 (Madrid excluded due to unknown clock precision)
+3. **Ciclo de Vida Store-and-Forward:**
+   * `PROPOSED` $\to$ `ACCEPTED / REJECTED` $\to$ `EXECUTING` $\to$ `VALIDATING` $\to$ `PUBLISHED`.
+   * Preserva la soberanía de cada observatorio individual con validación de calidad previa a la publicación en el archivo federado.
 
-Scheduled:
-2
+4. **Monitoreo de Espectro & Línea de Emisión:**
+   * Visualizador dinámico de espectro para hidrógeno neutro (HI $1420.405\text{ MHz}$), ráfagas solares VHF y perfiles integrados de púlsares.
 
-Completed:
-1
+---
 
-Validated:
-1 PASS
-
-Node ZA-CPT-01 Status: FAILED (Reason: unsafe_weather)
-Node AR-BUE-01 Status: PUBLISHED
-```
-
-## Node Quick Start
+## 🧪 Pruebas Unitarias
 
 ```bash
-uv run python -m radio_observatory_network.cli node init
-uv run python -m radio_observatory_network.cli node doctor
+# Tests de la suite JavaScript / Web
+node tests/test_network_engine.js
+
+# Demostración del motor CLI Python
+python -m radio_observatory_network.cli demo
 ```
 
-## Core Principles
+---
 
-- **Federated Principle:** The coordinator proposes. The node decides.
-- **Node Sovereignty:** Never ignore interlocks, limits, emergency stops, weather constraints, or local policies.
-- **Network != Interferometer:** This network does not require phase coherence. It coordinates operations and archives standard data products (spectra, time series).
-- **Store-and-Forward:** The node agent survives network loss. Observations continue, results are queued, and synchronization resumes when online.
-- **Explainable Scheduler:** No AI black boxes. Every scheduling decision (MATCH, NO_MATCH, CONDITIONAL) is fully explainable based on explicit hardware capabilities, epochs, and constraints.
+## 📄 Licencia
+
+Código abierto bajo licencia [MIT](LICENSE). Desarrollado por **Lorenzo Perez** ([@lorenhey](https://github.com/lorenhey)).

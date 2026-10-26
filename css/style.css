@@ -1,0 +1,68 @@
+/* Estilos para radio-observatory-network v2.0.0 */
+:root {
+  --font-mono: 'Consolas', 'Fira Code', 'Monaco', monospace;
+}
+
+body {
+  background-color: #030712;
+  color: #f3f4f6;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Tabs */
+.nav-tab-btn.active-tab {
+  background-color: #111827;
+  color: #38bdf8;
+  border-bottom: 2px solid #38bdf8;
+}
+.nav-tab-btn.inactive-tab {
+  color: #9ca3af;
+  border-bottom: 2px solid transparent;
+}
+.nav-tab-btn.inactive-tab:hover {
+  color: #f3f4f6;
+  background-color: rgba(17, 24, 39, 0.5);
+}
+
+.card-panel {
+  background-color: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 0.5rem;
+}
+
+/* Badges */
+.badge-online {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge-observing {
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.badge-warning {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.badge-offline {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}

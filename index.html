@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>radio-observatory-network — Red Federada de Observatorios Radioastronómicos</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- KaTeX for math formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="flex flex-col min-h-screen text-slate-100 antialiased selection:bg-sky-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo & Branding -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 text-xl shadow-inner">
+            <i class="fa-solid fa-tower-broadcast"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-lg font-bold tracking-tight text-white font-mono">radio-observatory-network</span>
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800">v2.0.0</span>
+            </div>
+            <p class="text-xs text-slate-400 hidden sm:block">Núcleo Federado de Coordinación & Campañas Radioastronómicas</p>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="hidden md:flex space-x-1">
+          <button class="nav-tab-btn active-tab px-3 py-2 text-xs font-semibold rounded-t flex items-center gap-1.5 transition" data-tab="network">
+            <i class="fa-solid fa-globe"></i> Red & Campañas
+          </button>
+          <button class="nav-tab-btn inactive-tab px-3 py-2 text-xs font-semibold rounded-t flex items-center gap-1.5 transition" data-tab="spectrum">
+            <i class="fa-solid fa-wave-square"></i> Espectro & Flujo
+          </button>
+          <button class="nav-tab-btn inactive-tab px-3 py-2 text-xs font-semibold rounded-t flex items-center gap-1.5 transition" data-tab="nodes">
+            <i class="fa-solid fa-satellite-dish"></i> Estaciones
+          </button>
+          <button class="nav-tab-btn inactive-tab px-3 py-2 text-xs font-semibold rounded-t flex items-center gap-1.5 transition" data-tab="theory">
+            <i class="fa-solid fa-book-bookmark"></i> Tratado
+          </button>
+        </nav>
+
+        <!-- Tools: Actions & GitHub -->
+        <div class="flex items-center gap-2">
+          <button id="export-campaign-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded text-xs font-semibold flex items-center gap-1.5 transition shadow">
+            <i class="fa-solid fa-file-code"></i> <span class="hidden sm:inline">Manifest</span>
+          </button>
+          <a href="https://github.com/lorenhey/radio-observatory-network" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white p-2 text-sm" title="Ver Repositorio en GitHub">
+            <i class="fa-brands fa-github"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <div class="md:hidden flex overflow-x-auto px-2 border-t border-slate-800 py-1 space-x-1 bg-slate-950">
+      <button class="nav-tab-btn active-tab px-2.5 py-1 text-xs whitespace-nowrap rounded" data-tab="network">Red</button>
+      <button class="nav-tab-btn inactive-tab px-2.5 py-1 text-xs whitespace-nowrap rounded" data-tab="spectrum">Espectro</button>
+      <button class="nav-tab-btn inactive-tab px-2.5 py-1 text-xs whitespace-nowrap rounded" data-tab="nodes">Estaciones</button>
+      <button class="nav-tab-btn inactive-tab px-2.5 py-1 text-xs whitespace-nowrap rounded" data-tab="theory">Teoría</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+    <!-- Campaign Selector Bar -->
+    <div class="card-panel p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-sky-500 shadow-lg">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-satellite text-sky-400 text-lg"></i>
+        <div>
+          <label class="text-xs font-bold text-slate-300 block uppercase tracking-wider">Campaña de Observación Federada</label>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-1">
+            <select id="campaign-selector" class="w-full sm:w-80 font-medium text-sky-300 cursor-pointer"></select>
+            <span id="camp-desc" class="text-xs text-slate-400 hidden lg:inline">--</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+        <button id="run-campaign-btn" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 rounded text-xs text-white font-bold flex items-center gap-2 shadow">
+          <i class="fa-solid fa-play"></i> Ejecutar Campaña Federada
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: NETWORK & CAMPAIGN WORKBENCH -->
+    <section id="tab-network" class="tab-content space-y-6">
+      
+      <!-- Key KPI Cards Row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="card-panel p-3 text-center border-t-2 border-sky-400">
+          <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Estaciones</span>
+          <div id="stat-total-nodes" class="text-2xl font-mono font-black text-white mt-1">--</div>
+          <span class="text-[10px] text-slate-500">Nodos Registrados</span>
+        </div>
+        <div class="card-panel p-3 text-center border-t-2 border-emerald-400">
+          <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Estaciones Online</span>
+          <div id="stat-online-nodes" class="text-2xl font-mono font-black text-emerald-400 mt-1">--</div>
+          <span class="text-[10px] text-slate-500">Disponibilidad en Tiempo Real</span>
+        </div>
+        <div class="card-panel p-3 text-center border-t-2 border-amber-400">
+          <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Nodos Elegibles</span>
+          <div id="stat-eligible-nodes" class="text-2xl font-mono font-black text-amber-300 mt-1">--</div>
+          <span class="text-[10px] text-slate-500">Horizonte & Cobertura OK</span>
+        </div>
+        <div class="card-panel p-3 text-center border-t-2 border-purple-400">
+          <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Jobs Asignados</span>
+          <div id="stat-active-jobs" class="text-2xl font-mono font-black text-purple-300 mt-1">--</div>
+          <span class="text-[10px] text-slate-500">Plan de Coordinación</span>
+        </div>
+      </div>
+
+      <!-- World Map & Baseline Network Canvas -->
+      <div class="card-panel p-4 space-y-3">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+          <h2 class="text-sm font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-map-location-dot text-sky-400"></i> Mapa Global de Estaciones & Líneas de Base Interferométricas
+          </h2>
+          <div class="flex items-center gap-4 text-xs font-mono text-slate-400">
+            <span>Objetivo: <strong id="camp-target-name" class="text-white">--</strong></span>
+            <span>Freq: <strong id="camp-freq" class="text-sky-300">--</strong></span>
+            <span id="camp-ra-dec">--</span>
+          </div>
+        </div>
+
+        <div class="w-full flex justify-center bg-black rounded p-2 border border-slate-800">
+          <canvas id="worldMapCanvas" width="900" height="450" class="w-full max-w-4xl h-auto rounded shadow-inner"></canvas>
+        </div>
+        <div class="flex justify-between text-[11px] text-slate-400 px-2 font-mono">
+          <span>● Nodo Elegible (Azul)</span>
+          <span>● Nodo En Espera (Verde)</span>
+          <span>● Alerta Clima (Rojo)</span>
+          <span>- - - Línea de Base Interferométrica</span>
+        </div>
+      </div>
+
+      <!-- Jobs Execution Table -->
+      <div class="card-panel p-4 space-y-3">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+          <h2 class="text-sm font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-sky-400"></i> Estado de Tareas de Observación (Store & Forward Lifecycle)
+          </h2>
+          <span class="text-xs text-slate-400">PROPOSED → ACCEPTED → EXECUTING → VALIDATING → PUBLISHED</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 bg-slate-900/60 text-slate-400 text-xs uppercase tracking-wider font-mono">
+                <th class="p-2.5">ID Tarea</th>
+                <th class="p-2.5">Estación / Nodo</th>
+                <th class="p-2.5">Altura</th>
+                <th class="p-2.5">Azimut</th>
+                <th class="p-2.5 w-48">Progreso</th>
+                <th class="p-2.5">Estado</th>
+                <th class="p-2.5">Validación QC</th>
+              </tr>
+            </thead>
+            <tbody id="jobs-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: SPECTRUM QC -->
+    <section id="tab-spectrum" class="tab-content hidden space-y-6">
+      <div class="card-panel p-5 space-y-4">
+        <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-wave-square text-sky-400"></i> Espectro de Radio & Perfil de Flujo Normalizado
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">Detección y validación local de línea de emisión antes del store-and-forward al archivo federado.</p>
+          </div>
+          <span class="text-xs font-mono text-sky-400">Resolución: 10 kHz / canal</span>
+        </div>
+
+        <div class="relative w-full h-80">
+          <canvas id="spectrumChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: NODE DIRECTORY -->
+    <section id="tab-nodes" class="tab-content hidden space-y-4">
+      <div class="card-panel p-5 space-y-4">
+        <div class="border-b border-slate-800 pb-3">
+          <h2 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-satellite-dish text-sky-400"></i> Directorio de Nodos Federados
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Inventario heterogéneo de antenas parabólicas, radiómetros y receptores SDR enlazados a la red.</p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 bg-slate-900/60 text-slate-400 text-xs uppercase tracking-wider font-mono">
+                <th class="p-2.5">ID Nodo</th>
+                <th class="p-2.5">Nombre</th>
+                <th class="p-2.5">País</th>
+                <th class="p-2.5">Coordenadas</th>
+                <th class="p-2.5">Banda de Frecuencia</th>
+                <th class="p-2.5">Apertura</th>
+                <th class="p-2.5">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="nodes-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: THEORY -->
+    <section id="tab-theory" class="tab-content hidden space-y-4">
+      <div class="card-panel p-6 space-y-6">
+        <div class="border-b border-slate-800 pb-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-sky-400"></i> Tratado de Redes Radioastronómicas Federadas
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Principios de coordinación descentralizada, proveniencia inmutable y geodesia astronómica.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300 leading-relaxed">
+          <div class="space-y-3 bg-slate-900/60 p-4 rounded border border-slate-800">
+            <h3 class="text-sm font-bold text-sky-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-network-wired"></i> Arquitectura Store-and-Forward Descentralizada
+            </h3>
+            <p>A diferencia de los observatorios tradicionales con control centralizado, la red federada opera bajo soberanía local:</p>
+            <ul class="list-disc list-inside space-y-1 text-slate-400">
+              <li>El coordinador central <strong>propone</strong> campañas y calendarios según visibilidad astrométrica.</li>
+              <li>Cada nodo autónomo <strong>revisa</strong> las condiciones locales (clima, RFI, calibración) y decide ejecutar o rechazar.</li>
+              <li>Los datos se validan localmente antes de sincronizarse asíncronamente con el archivo federado global.</li>
+            </ul>
+          </div>
+
+          <div class="space-y-3 bg-slate-900/60 p-4 rounded border border-slate-800">
+            <h3 class="text-sm font-bold text-amber-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-compass"></i> Transformaciones de Tiempo Sidéreo y Alt-Az
+            </h3>
+            <p>La altura ($\text{Alt}$) y acimut ($\text{Az}$) de una radiofuente en cada nodo se computan en función de la latitud ($\phi$), declinación ($\delta$) y ángulo horario ($H = \text{LST} - \alpha$):</p>
+            <div class="p-2 bg-slate-950 rounded font-mono text-slate-200">
+              sin(Alt) = sin(ϕ)·sin(δ) + cos(ϕ)·cos(δ)·cos(H)
+            </div>
+            <p class="text-slate-400 text-[11px]">Esto permite coordinar observaciones transcontinentales de 24 horas continuas transfiriendo la custodia de la observación entre nodos a medida que la Tierra rota.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 text-xs text-slate-500 py-4 mt-8">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div>radio-observatory-network v2.0.0 — Red federada por <a href="https://github.com/lorenhey" class="text-sky-400 hover:underline">lorenhey</a></div>
+      <div class="flex items-center gap-4">
+        <span>Store-and-Forward / VLBI / HI 21cm</span>
+        <span>Ejecución 100% Offline</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/network-engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
